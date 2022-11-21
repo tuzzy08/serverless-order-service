@@ -1,12 +1,13 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-const dynamodb = require("aws-sdk/clients/dynamodb")
-const docClient = new dynamodb.DocumentClient()
-const uuid = require("node-uuid")
-
-const tableName = process.env.ORDER_TABLE
+// Implementing support for step functions
+const stepfunctions = require('@aws-sdk/client-sfn');
+const stepfunctionsClient = new stepfunctions.SFN();
 const DEFAULT_ORDER_STATUS = "PENDING"
+
+// Now, are getting State Machine Arn from environment variable
+const stateMachineArn = process.env.STATE_MACHINE_ARN;
 
 // It gets the current date
 const getCurrentDate = () => {
@@ -18,19 +19,7 @@ const getCurrentDate = () => {
   let minutes = date_ob.getMinutes()
   let seconds = date_ob.getSeconds()
 
-  return (
-    year +
-    "-" +
-    month +
-    "-" +
-    date +
-    "T" +
-    hours +
-    ":" +
-    minutes +
-    ":" +
-    seconds
-  )
+  return (year + "-" + month + "-" + date + "T" + hours + ":" + minutes + ":" + seconds)
 }
 
 exports.postOrders = async (event) => {
@@ -41,7 +30,7 @@ exports.postOrders = async (event) => {
     const { messageId, body } = record // Now destructures the MessageId and Body from event.
     let parsedBody = JSON.parse(body) // Parses the Json to Javascript object
 
-    // Instead of ussing uuid in Id, now we are passing MessageId to Id parameter in Item payload
+    // Instead of using uuid in Id, now we are passing MessageId to Id parameter in Item payload
     let item = {
       user_id: "static_user",
       id: messageId,
@@ -52,18 +41,20 @@ exports.postOrders = async (event) => {
       orderStatus: DEFAULT_ORDER_STATUS,
     }
 
-    let params = {
-      TableName: tableName,
-      Item: item,
-    }
+    // We will be creating step functions object from input and stateMachine arn.
+    const startReq = {
+      stateMachineArn: stateMachineArn,
+      input: JSON.stringify(item),
+      name: messageId
+     }
 
-    // Use Put method to put items into Dynamodb
+    // It calls the startExecution method of step functions client with input
     try {
-      const data = await docClient.put(params).promise()
-      console.log("Success for putting Item")
-      console.log(data)
+      console.log('starting a SFN execution', { stateMachineArn: stateMachineArn })
+      await stepfunctionsClient.startExecution(startReq);
+      console.log('Job Completed')
     } catch (err) {
-      console.log("Failure", err.message)
+      console.log( err)
     }
   }
   const response = {
