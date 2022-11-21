@@ -81,6 +81,12 @@ Resources:
               - !Sub 
                 - '${StateMachine}'
                 - { StateMachine: !Ref OrderManagementSFN }
+  ProcessPaymentFumction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/order-management/functions/process-payment/
+      Handler: app.processPayment
+      Runtime: nodejs14.x
 
   GetSingleOrder:
     Type: AWS::Serverless::Function 
