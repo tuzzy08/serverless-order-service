@@ -6,8 +6,8 @@ exports.processPayment = async (event) => {
     const paymentState = ['ok', 'error']
     const errorMessages = ['could not contact payment processor', 'payment method declined', 'unknown error']
     
-    const paymentRandom = Math.floor(Math.random() * paymentState.length);
     // Simulating random responses from processPayment lambda function
+    const paymentRandom = Math.floor(Math.random() * paymentState.length);
     if (paymentState[paymentRandom] == "error"){
         let errorRandom = Math.floor(Math.random() * errorMessages.length)
         paymentResult['errorMessage'] = errorMessages[errorRandom]
