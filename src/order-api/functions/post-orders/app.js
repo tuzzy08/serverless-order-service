@@ -32,7 +32,7 @@ exports.postOrders = async (event) => {
 
     // Instead of using uuid in Id, now we are passing MessageId to Id parameter in Item payload
     let item = {
-      user_id: "static_user",
+      user_id: parsedBody.cognito_userid,
       id: messageId,
       name: parsedBody.data.name,
       restaurantId: parsedBody.data.restaurantId,
