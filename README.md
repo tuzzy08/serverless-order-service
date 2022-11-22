@@ -1,11 +1,11 @@
 # Serverless Order Service
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following main files and folders.
 
-📁 populate-db - Code for seeding the dynamoDB database.
-📁 src - Applications main logic(Lambda Functions).
-📁 events - Invocation events that you can use to invoke the function.
-📄 template.yaml - A template that defines the application's AWS resources.
-📄 api.yaml - A swagger 2.0 template for an aws API Gateway specification
+- 📁populate-db - Code for seeding the dynamoDB database.
+- 📁src - Applications main logic(Lambda Functions).
+- 📁events - Invocation events that you can use to invoke the function.
+- 📄template.yaml - A template that defines the application's AWS resources.
+- 📄api.yaml - A swagger 2.0 template for an aws API Gateway specification
 
 The application uses several AWS resources, including DynamoDb, Lambda functions, Step Functions, Amazon Cognito, and an API Gateway API. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
 
